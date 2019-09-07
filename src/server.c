@@ -8,9 +8,11 @@
 
 int main(int argc, char* argv[]){
     char sendBuff[1025];
+    char recvBuff[1025];
     time_t ticks;
     int sockfd, connfd, len;
-    struct sockaddr_in server_addr;
+    struct sockaddr_in server_addr, client_addr;
+    int clilen = sizeof(client_addr);
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1){
         printf("Socket creation failed... \n");
@@ -35,13 +37,26 @@ int main(int argc, char* argv[]){
     else{
         printf("Server is listening... \n");
     }
-
+    int n = 0;
     while(1){
-        connfd = accept(sockfd, NULL, NULL);
-        ticks = time(NULL);
-        snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
-        printf("%s\n",sendBuff);
-        write(connfd, sendBuff, strlen(sendBuff));
+        connfd = accept(sockfd, &client_addr, &clilen);
+        while(1){
+            ticks = time(NULL);
+            snprintf(sendBuff, sizeof(sendBuff), "%.24s\r\n", ctime(&ticks));
+            printf("%s",sendBuff);
+            write(connfd, sendBuff, strlen(sendBuff));
+            bzero(recvBuff, sizeof(recvBuff));
+            n = read(connfd, recvBuff, sizeof(recvBuff)) - 1;
+            if (n < 0){
+                printf("Read fail. n = %d\n",n);
+            }
+            else{
+                recvBuff[n] = 0;
+                printf("n = %d\n",n);
+                printf("%s\n",recvBuff);
+            }
+            while(time(NULL) - ticks < 5);
+        }
     }
     return 0;
 }

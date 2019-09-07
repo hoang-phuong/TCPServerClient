@@ -42,8 +42,6 @@ MDOBJ:
 .PHONY: clean
 clean: 
 	@$(RM) -rf $(OBJDIR)/*.o
-	@$(RM) -rf $(OUTDIR)/$(APP)
-	@$(RM) -rf $(OUTDIR)/$(APP).map
-	@$(RM) -rf *.db
+	@$(RM) -rf $(OUTDIR)/*
 
 

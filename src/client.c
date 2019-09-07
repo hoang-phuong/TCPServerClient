@@ -44,14 +44,16 @@ int main(int argc, char *argv[])
        printf("\n Error : Connect Failed \n");
        return 1;
     } 
-
+    char* response = "got it\n";
     while ( (n = read(sockfd, recvBuff, sizeof(recvBuff)-1)) > 0)
     {
         recvBuff[n] = 0;
+        write(sockfd,response,strlen(response));
         if(fputs(recvBuff, stdout) == EOF)
         {
             printf("\n Error : Fputs error\n");
         }
+        
     } 
 
     if(n < 0)
